@@ -6808,6 +6808,7 @@ highlight_color (
   int fg = FALSE;
   int sp = FALSE;
   int font = FALSE;
+  int HexValue = FALSE;
 
   if (id <= 0 || id > highlight_ga.ga_len)
     return NULL;
@@ -6821,11 +6822,21 @@ highlight_color (
     sp = TRUE;
   else if (!(TOLOWER_ASC(what[0]) == 'b' && TOLOWER_ASC(what[1]) == 'g'))
     return NULL;
+  if (TOLOWER_ASC(what[2]) == '#')
+    HexValue = TRUE;
   if (modec == 'g') {
     if (fg)
+      if (HexValue) {
+        sprintf((char*)name, "#%6X", HL_TABLE()[id - 1].sg_rgb_fg);
+        return name;
+      }
       return HL_TABLE()[id - 1].sg_rgb_fg_name;
     if (sp)
       return NULL;
+    if (HexValue) {
+        sprintf((char*)name, "#%6X", HL_TABLE()[id - 1].sg_rgb_bg);
+        return name;
+      }
     return HL_TABLE()[id - 1].sg_rgb_bg_name;
   }
   if (font || sp)
